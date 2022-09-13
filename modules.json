@@ -1,0 +1,7 @@
+[
+  {
+    "name": "ModSecurity-nginx",
+    "form": "git",
+    "url": "https://github.com/SpiderLabs/ModSecurity-nginx"
+  }
+]

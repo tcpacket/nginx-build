@@ -40,7 +40,6 @@ func DownloadAndExtractParallel(m Module) {
 
 func download(m Module, logName string) error {
 	form := m.Form
-	url := m.URL
 
 	f, err := os.Create(logName)
 	if err != nil {
@@ -51,14 +50,15 @@ func download(m Module, logName string) error {
 	switch form {
 	case "git":
 		_, err = git.PlainClone(m.Name, false, &git.CloneOptions{
-			URL:               url,
+			URL:               m.URL,
 			SingleBranch:      true,
 			RecurseSubmodules: 10,
 			Progress:          f,
 			InsecureSkipTLS:   false,
 		})
+		return err
 	case "hg":
-		args := []string{form, "clone", url}
+		args := []string{form, "clone", m.URL}
 		if command.VerboseEnabled {
 			err = command.Run(args)
 			break

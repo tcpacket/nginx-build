@@ -88,6 +88,9 @@ func makeNginxBuildOptions() Options {
 	argsBool["with-http_v2_module"] = OptionBool{
 		Desc: "build nginx with http_v2_module",
 	}
+	argsBool["with-http_v2_module"] = OptionBool{
+		Desc: "enable HTTP/2 module",
+	}
 
 	argsString["v"] = OptionValue{
 		Desc:    "nginx version",
@@ -145,21 +148,17 @@ func makeNginxBuildOptions() Options {
 		Desc:    "nginx pid file path",
 		Default: "/var/run/nginx.pid",
 	}
-	argsString["lock-path"] = OptionValue{
-		Desc:    "nginx lock file path",
-		Default: "/var/run/nginx.lock",
+	argsString["http-log-path"] = OptionValue{
+		Desc:    "nginx http log file path",
+		Default: "/var/log/nginx/access.log",
 	}
 	argsString["error-log-path"] = OptionValue{
 		Desc:    "nginx error log file path",
 		Default: "/var/log/nginx/error.log",
 	}
-	argsString["http-log-path"] = OptionValue{
-		Desc:    "nginx access log file path",
-		Default: "/var/log/nginx/access.log",
-	}
 	argsString["prefix"] = OptionValue{
 		Desc:    "nginx installation prefix",
-		Default: "/usr/local/nginx",
+		Default: "/usr/local",
 	}
 
 	nginxBuildOptions.Bools = argsBool
