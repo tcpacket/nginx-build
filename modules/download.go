@@ -9,6 +9,8 @@ import (
 
 	"github.com/tcpacket/nginx-build/command"
 	"github.com/tcpacket/nginx-build/util"
+
+	"github.com/go-git/go-git/v5"
 )
 
 func DownloadAndExtractParallel(m Module) {
@@ -37,13 +39,15 @@ func DownloadAndExtractParallel(m Module) {
 
 func download(m Module, logName string) error {
 	form := m.Form
-	url := m.URL
 
 	switch form {
 	case "git":
-		fallthrough
+		_, err := git.PlainClone(m.Name, false, &git.CloneOptions{
+			URL: m.URL,
+		})
+		return err
 	case "hg":
-		args := []string{form, "clone", url}
+		args := []string{form, "clone", m.URL}
 		if command.VerboseEnabled {
 			return command.Run(args)
 		}
@@ -52,7 +56,7 @@ func download(m Module, logName string) error {
 		if err != nil {
 			return command.Run(args)
 		}
-		defer f.Close()
+		util.Fclose(f)
 
 		cmd, err := command.Make(args)
 		if err != nil {

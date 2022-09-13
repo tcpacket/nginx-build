@@ -130,6 +130,7 @@ func main() {
 	configureOnly := nginxBuildOptions.Bools["configureonly"].Enabled
 	idempotent := nginxBuildOptions.Bools["idempotent"].Enabled
 	helpAll := nginxBuildOptions.Bools["help-all"].Enabled
+	enableHTTP2 := nginxBuildOptions.Bools["with-http_v2_module"].Enabled
 
 	version := nginxBuildOptions.Values["v"].Value
 	nginxConfigurePath := nginxBuildOptions.Values["c"].Value
@@ -401,6 +402,7 @@ func main() {
 		Opts: configureOptions,
 		Dir:  rootDir,
 
+		HTTP2Enabled:     *enableHTTP2,
 		OpenRestyEnabled: *openResty,
 	}
 

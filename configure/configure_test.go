@@ -17,7 +17,7 @@ func setupBuilders(t *testing.T) []builder.Builder {
 	return builders
 }
 
-func setupModules3rd(t *testing.T) []modules.Module {
+func setupModules(t *testing.T) []modules.Module {
 	modules3rdConf := "../config/modules.json.example"
 	modules3rd, err := modules.Load(modules3rdConf)
 	if err != nil {
@@ -27,7 +27,7 @@ func setupModules3rd(t *testing.T) []modules.Module {
 }
 
 func TestConfiguregenModule3rd(t *testing.T) {
-	modules3rd := setupModules3rd(t)
+	modules3rd := setupModules(t)
 
 	configureModules3rd := handleModuleFlags(modules3rd)
 
