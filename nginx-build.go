@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -143,7 +142,6 @@ func main() {
 	openRestyVersion := nginxBuildOptions.Values["openrestyversion"].Value
 	tengineVersion := nginxBuildOptions.Values["tengineversion"].Value
 	patchOption := nginxBuildOptions.Values["patch-opt"].Value
-	confPath := nginxBuildOptions.Values["conf-path"].Value
 
 	// Allow multiple flags for `--patch`
 	{
@@ -241,10 +239,6 @@ func main() {
 		log.Fatal().Msgf("%v", err)
 	}
 	nginxConfigure = configure.Normalize(nginxConfigure)
-
-	if *confPath != "" {
-		nginxConfigure += fmt.Sprintf(" --conf-path=%s \\\n", *confPath)
-	}
 
 	modules3rd, err := module3rd.Load(*modulesConfPath)
 	if err != nil {
