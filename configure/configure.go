@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/cubicdaiya/nginx-build/command"
+	"github.com/tcpacket/nginx-build/command"
 )
 
 func Run() error {

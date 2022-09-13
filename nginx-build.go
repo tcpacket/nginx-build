@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"os"
 	"os/signal"
 	"runtime"
@@ -10,11 +9,14 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/cubicdaiya/nginx-build/builder"
-	"github.com/cubicdaiya/nginx-build/command"
-	"github.com/cubicdaiya/nginx-build/configure"
-	"github.com/cubicdaiya/nginx-build/module3rd"
-	"github.com/cubicdaiya/nginx-build/util"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
+	"github.com/tcpacket/nginx-build/builder"
+	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/nginx-build/configure"
+	"github.com/tcpacket/nginx-build/module3rd"
+	"github.com/tcpacket/nginx-build/util"
 )
 
 var (
@@ -22,6 +24,12 @@ var (
 )
 
 func init() {
+	//goland:noinspection GoBoolExpressions
+	log.Logger = zerolog.New(zerolog.ConsoleWriter{
+		Out:     os.Stderr,
+		NoColor: runtime.GOOS == "windows",
+	}).With().Timestamp().Logger()
+	zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	nginxBuildOptions = makeNginxBuildOptions()
 }
 
@@ -185,10 +193,10 @@ func main() {
 
 	var nginxBuilder builder.Builder
 	if *openResty && *tengine {
-		log.Fatal("select one between '-openresty' and '-tengine'.")
+		log.Fatal().Msg("select one between '-openresty' and '-tengine'.")
 	}
 	if *openSSLStatic && *libreSSLStatic {
-		log.Fatal("select one between '-openssl' and '-libressl'.")
+		log.Fatal().Msg("select one between '-openssl' and '-libressl'.")
 	}
 	if *openResty {
 		nginxBuilder = builder.MakeBuilder(builder.ComponentOpenResty, *openRestyVersion)
@@ -213,10 +221,10 @@ func main() {
 
 		isSame, err := builder.IsSameVersion(builders)
 		if err != nil {
-			log.Println("[notice]", err)
+			log.Warn().Msgf("failed to check version: %s", err)
 		}
 		if isSame {
-			log.Println("Installed nginx is same.")
+			log.Warn().Msgf("Installed nginx is same version.")
 			return
 		}
 	}
@@ -228,23 +236,23 @@ func main() {
 
 	nginxConfigure, err := util.FileGetContents(*nginxConfigurePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Msgf("%v", err)
 	}
 	nginxConfigure = configure.Normalize(nginxConfigure)
 
 	modules3rd, err := module3rd.Load(*modulesConfPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Msgf("%v", err)
 	}
 
 	if len(*workParentDir) == 0 {
-		log.Fatal("set working directory with -d")
+		log.Fatal().Msg("set working directory with -d")
 	}
 
 	if !util.FileExists(*workParentDir) {
 		err := os.Mkdir(*workParentDir, 0755)
 		if err != nil {
-			log.Fatalf("Failed to create working directory(%s) does not exist.", *workParentDir)
+			log.Fatal().Msgf("Failed to create working directory(%s) does not exist.", *workParentDir)
 		}
 	}
 
@@ -260,28 +268,28 @@ func main() {
 	if *clear {
 		err := util.ClearWorkDir(workDir)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Msgf("%v", err)
 		}
 	}
 
 	if !util.FileExists(workDir) {
 		err := os.MkdirAll(workDir, 0755)
 		if err != nil {
-			log.Fatalf("Failed to create working directory(%s) does not exist.", workDir)
+			log.Fatal().Msgf("Failed to create working directory(%s) does not exist.", workDir)
 		}
 	}
 
 	rootDir := util.SaveCurrentDir()
 	err = os.Chdir(workDir)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Msgf("%v", err)
 	}
 
 	// remove nginx source code applyed patch
 	if *patchPath != "" && util.FileExists(nginxBuilder.SourcePath()) {
 		err := os.RemoveAll(nginxBuilder.SourcePath())
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Msgf("%v", err)
 		}
 	}
 
@@ -341,13 +349,16 @@ func main() {
 	if len(modules3rd) > 0 {
 		for _, m := range modules3rd {
 			if err := module3rd.Provide(&m); err != nil {
-				log.Fatal(err)
+				log.Fatal().Msgf("%v", err)
 			}
 		}
 	}
 
 	// cd workDir/nginx-${version}
-	os.Chdir(nginxBuilder.SourcePath())
+	err = os.Chdir(nginxBuilder.SourcePath())
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to change directory")
+	}
 
 	var dependencies []builder.StaticLibrary
 	if *pcreStatic {
@@ -369,26 +380,26 @@ func main() {
 	log.Printf("Generate configure script for %s.....", nginxBuilder.SourcePath())
 
 	if *pcreStatic && pcreBuilder.IsIncludeWithOption(nginxConfigure) {
-		log.Println(pcreBuilder.WarnMsgWithLibrary())
+		log.Warn().Msgf("%v", pcreBuilder.WarnMsgWithLibrary())
 	}
 
 	if *openSSLStatic && openSSLBuilder.IsIncludeWithOption(nginxConfigure) {
-		log.Println(openSSLBuilder.WarnMsgWithLibrary())
+		log.Warn().Msgf("%v", openSSLBuilder.WarnMsgWithLibrary())
 	}
 
 	if *libreSSLStatic && libreSSLBuilder.IsIncludeWithOption(nginxConfigure) {
-		log.Println(libreSSLBuilder.WarnMsgWithLibrary())
+		log.Warn().Msgf("%v", libreSSLBuilder.WarnMsgWithLibrary())
 	}
 
 	if *zlibStatic && zlibBuilder.IsIncludeWithOption(nginxConfigure) {
-		log.Println(zlibBuilder.WarnMsgWithLibrary())
+		log.Warn().Msgf("%v", zlibBuilder.WarnMsgWithLibrary())
 	}
 
 	configureScript := configure.Generate(nginxConfigure, modules3rd, dependencies, configureOptions, rootDir, *openResty, *jobs)
 
 	err = os.WriteFile("./nginx-configure", []byte(configureScript), 0655)
 	if err != nil {
-		log.Fatalf("Failed to generate configure script for %s", nginxBuilder.SourcePath())
+		log.Fatal().Msgf("Failed to generate configure script for %s", nginxBuilder.SourcePath())
 	}
 
 	util.Patch(*patchPath, *patchOption, rootDir, false)
@@ -426,8 +437,13 @@ func main() {
 		// Specifically, `uname -p` is 'i386' and `uname -m` is 'x86_64'.
 		// In this case, a build of OpenSSL fails.
 		// So it needs to convince OpenSSL with KERNEL_BITS.
+
+		//goland:noinspection GoBoolExpressions
 		if runtime.GOOS == "darwin" && runtime.GOARCH == "amd64" {
-			os.Setenv("KERNEL_BITS", "64")
+			err := os.Setenv("KERNEL_BITS", "64")
+			if err != nil {
+				log.Fatal().Err(err).Msgf("failed to set kernel_bits environment variable")
+			}
 		}
 	}
 

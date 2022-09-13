@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/cubicdaiya/nginx-build/command"
+	"github.com/tcpacket/nginx-build/command"
 )
 
 func BuildNginx(jobs int) error {

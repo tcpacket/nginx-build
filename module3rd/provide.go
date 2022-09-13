@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cubicdaiya/nginx-build/command"
-	"github.com/cubicdaiya/nginx-build/util"
+	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/nginx-build/util"
 )
 
 func Provide(m *Module3rd) error {

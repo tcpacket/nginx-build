@@ -5,3 +5,5 @@ vendor
 doc/_build/doctrees/
 *.tar
 *.tar.gz
+.idea/
+test/

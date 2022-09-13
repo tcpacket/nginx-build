@@ -8,8 +8,8 @@ const (
 
 // pcre
 const (
-	PcreVersion           = "10.40"
-	PcreDownloadURLPrefix = "https://github.com/PhilipHazel/pcre2/releases/download"
+	PcreVersion           = "8.32"
+	PcreDownloadURLPrefix = "https://ftp.exim.org/pub"
 )
 
 // openssl

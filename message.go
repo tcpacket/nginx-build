@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"runtime"
 	"runtime/debug"
+
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -28,7 +29,7 @@ func nginxBuildVersion() string {
 func printNginxBuildVersion() {
 	fmt.Printf(`nginx-build %s
 Compiler: %s %s
-Copyright (C) 2014-2022 Tatsuhiko Kubo <cubicdaiya@gmail.com>
+Copyright (C) 2014-2022 Tatsuhiko Kubo <tcpacket@gmail.com>
 `,
 		nginxBuildVersion(),
 		runtime.Compiler,
@@ -53,7 +54,7 @@ Compiler: %s %s
 }
 
 func printLastMsg(workDir, srcDir string, openResty, configureOnly bool) {
-	log.Println("Complete building nginx!")
+	log.Info().Msgf("%v", "Complete building nginx!")
 
 	if !openResty {
 		if !configureOnly {
@@ -79,7 +80,7 @@ func printLastMsg(workDir, srcDir string, openResty, configureOnly bool) {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stdout, "Usage of %s:\n", os.Args[0])
+	_, _ = fmt.Fprintf(os.Stdout, "Usage of %s:\n", os.Args[0])
 	flag.VisitAll(func(f *flag.Flag) {
 		if !isNginxBuildOption(f.Name) {
 			return
@@ -92,6 +93,6 @@ func usage() {
 			s += fmt.Sprintf(" ( default: %s )", defValue)
 		}
 
-		fmt.Fprintf(os.Stdout, "%s\n", s)
+		_, _ = fmt.Fprintf(os.Stdout, "%s\n", s)
 	})
 }

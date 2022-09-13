@@ -2,12 +2,13 @@ package util
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"sync"
 
-	"github.com/cubicdaiya/nginx-build/command"
+	"github.com/rs/zerolog/log"
+
+	"github.com/tcpacket/nginx-build/command"
 )
 
 var (
@@ -74,12 +75,12 @@ func Patch(path, option, root string, reverse bool) {
 
 		isDir, err := IsDirectory(path)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Msgf("%v", err)
 		}
 		if isDir {
 			paths, err := ListDirectory(path)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal().Msgf("%v", err)
 			}
 			if paths != nil {
 				expanded_paths = append(expanded_paths, paths...)
@@ -99,10 +100,10 @@ func Patch(path, option, root string, reverse bool) {
 				log.Printf("Applying patch: %s %s", option, path)
 			}
 			if err := patch(path, option, reverse); err != nil {
-				log.Fatalf("Failed to apply patch: %s %s", option, path)
+				log.Fatal().Msgf("Failed to apply patch: %s %s", option, path)
 			}
 		} else {
-			log.Fatalf("Patch pathname: %s is not found", path)
+			log.Fatal().Msgf("Patch pathname: %s is not found", path)
 		}
 	}
 }

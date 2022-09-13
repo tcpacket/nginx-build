@@ -18,7 +18,7 @@ func TestModules3rd(t *testing.T) {
 		case "ngx_http_hello_world":
 			want.Name = "ngx_http_hello_world"
 			want.Form = "git"
-			want.Url = "https://github.com/cubicdaiya/ngx_http_hello_world"
+			want.Url = "https://github.com/tcpacket/ngx_http_hello_world"
 			want.Dynamic = false
 		default:
 			t.Fatalf("unexpected module: %v", m)

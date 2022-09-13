@@ -4,7 +4,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/cubicdaiya/nginx-build/builder"
+	"github.com/tcpacket/nginx-build/builder"
 )
 
 type Options struct {
@@ -23,7 +23,7 @@ type OptionBool struct {
 	Desc    string
 	Enabled *bool
 	// all options are false by default
-	//Default bool
+	// Default bool
 }
 
 type OptionNumber struct {

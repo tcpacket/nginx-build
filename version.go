@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/cubicdaiya/nginx-build/builder"
+	"github.com/rs/zerolog/log"
+
+	"github.com/tcpacket/nginx-build/builder"
 )
 
 func versionsGenNginx() []string {
@@ -37,7 +38,7 @@ func printNginxVersions() {
 
 func versionCheck(version string) {
 	if len(version) == 0 {
-		log.Println("[warn]nginx version is not set.")
-		log.Printf("[warn]nginx-build use %s.\n", builder.NginxVersion)
+		log.Warn().Msgf("%v", "nginx version is not set.")
+		log.Warn().Msgf("nginx-build use %s.", builder.NginxVersion)
 	}
 }

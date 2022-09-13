@@ -2,8 +2,11 @@ package util
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/rs/zerolog/log"
 )
 
 func FileExists(path string) bool {
@@ -67,4 +70,11 @@ func ClearWorkDir(workDir string) error {
 		}
 	}
 	return err
+}
+
+func Fclose(f io.Closer) {
+	err := f.Close()
+	if err != nil {
+		log.Warn().Err(err).Msg("failed to close file")
+	}
 }

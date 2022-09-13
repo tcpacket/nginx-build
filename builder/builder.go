@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/cubicdaiya/nginx-build/command"
-	"github.com/cubicdaiya/nginx-build/openresty"
+	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/nginx-build/openresty"
 )
 
 type Builder struct {
@@ -44,7 +44,7 @@ func (builder *Builder) name() string {
 	case ComponentNginx:
 		name = "nginx"
 	case ComponentPcre:
-		name = "pcre2"
+		name = "pcre"
 	case ComponentOpenSSL:
 		name = "openssl"
 	case ComponentLibreSSL:
@@ -69,8 +69,8 @@ func (builder *Builder) option() string {
 		name = "openssl"
 	}
 
-	// pcre2 does not match option name
-	if name == "pcre2" {
+	// pcre does not match option name
+	if name == "pcre" {
 		name = "pcre"
 	}
 
@@ -131,7 +131,7 @@ func (builder *Builder) InstalledVersion() (string, error) {
 		versionRe = openrestyVersionRe
 	case "zlib":
 		versionRe = zlibVersionRe
-	case "pcre2":
+	case "pcre":
 		versionRe = pcreVersionRe
 	case "openssl":
 		versionRe = opensslVersionRe
@@ -156,7 +156,7 @@ func MakeBuilder(component int, version string) Builder {
 	case ComponentNginx:
 		builder.DownloadURLPrefix = NginxDownloadURLPrefix
 	case ComponentPcre:
-		builder.DownloadURLPrefix = fmt.Sprintf("%s/pcre2-%s", PcreDownloadURLPrefix, version)
+		builder.DownloadURLPrefix = fmt.Sprintf("%s/pcre", PcreDownloadURLPrefix)
 	case ComponentOpenSSL:
 		builder.DownloadURLPrefix = OpenSSLDownloadURLPrefix
 	case ComponentLibreSSL:

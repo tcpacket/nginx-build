@@ -3,11 +3,12 @@ package module3rd
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/cubicdaiya/nginx-build/command"
-	"github.com/cubicdaiya/nginx-build/util"
+	"github.com/rs/zerolog/log"
+
+	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/nginx-build/util"
 )
 
 func DownloadAndExtractParallel(m Module3rd) {
@@ -30,7 +31,7 @@ func DownloadAndExtractParallel(m Module3rd) {
 			util.PrintFatalMsg(err, logName)
 		}
 	} else if !util.FileExists(m.Url) {
-		log.Fatalf("no such directory:%s", m.Url)
+		log.Fatal().Msgf("no such directory: %s", m.Url)
 	}
 }
 
