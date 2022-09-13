@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/tcpacket/nginx-build/builder"
 	"github.com/tcpacket/nginx-build/command"
 	"github.com/tcpacket/nginx-build/util"

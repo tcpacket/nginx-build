@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/nginx-build/logger"
 )
+
+var log = logger.Get()
 
 func PrintFatalMsg(err error, path string) {
 	if command.VerboseEnabled {

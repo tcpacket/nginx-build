@@ -6,8 +6,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/tcpacket/nginx-build/command"
 )
 

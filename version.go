@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/tcpacket/nginx-build/builder"
 )
 

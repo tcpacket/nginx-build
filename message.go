@@ -7,8 +7,6 @@ import (
 	"os/exec"
 	"runtime"
 	"runtime/debug"
-
-	"github.com/rs/zerolog/log"
 )
 
 var (

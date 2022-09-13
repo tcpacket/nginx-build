@@ -9,27 +9,20 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-
 	"github.com/tcpacket/nginx-build/builder"
 	"github.com/tcpacket/nginx-build/command"
 	"github.com/tcpacket/nginx-build/configure"
+	"github.com/tcpacket/nginx-build/logger"
 	"github.com/tcpacket/nginx-build/modules"
 	"github.com/tcpacket/nginx-build/util"
 )
 
 var (
 	nginxBuildOptions Options
+	log               = logger.Get()
 )
 
 func init() {
-	//goland:noinspection GoBoolExpressions
-	log.Logger = zerolog.New(zerolog.ConsoleWriter{
-		Out:     os.Stderr,
-		NoColor: runtime.GOOS == "windows",
-	}).With().Timestamp().Logger()
-	zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	nginxBuildOptions = makeNginxBuildOptions()
 }
 

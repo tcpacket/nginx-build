@@ -5,8 +5,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-
-	"github.com/rs/zerolog/log"
 )
 
 func FileExists(path string) bool {
