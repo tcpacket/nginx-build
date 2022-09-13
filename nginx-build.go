@@ -15,7 +15,7 @@ import (
 	"github.com/tcpacket/nginx-build/builder"
 	"github.com/tcpacket/nginx-build/command"
 	"github.com/tcpacket/nginx-build/configure"
-	"github.com/tcpacket/nginx-build/module3rd"
+	"github.com/tcpacket/nginx-build/modules"
 	"github.com/tcpacket/nginx-build/util"
 )
 
@@ -240,7 +240,7 @@ func main() {
 	}
 	nginxConfigure = configure.Normalize(nginxConfigure)
 
-	modules3rd, err := module3rd.Load(*modulesConfPath)
+	modules3rd, err := modules.Load(*modulesConfPath)
 	if err != nil {
 		log.Fatal().Msgf("%v", err)
 	}
@@ -335,8 +335,8 @@ func main() {
 	if len(modules3rd) > 0 {
 		wg.Add(len(modules3rd))
 		for _, m := range modules3rd {
-			go func(m module3rd.Module3rd) {
-				module3rd.DownloadAndExtractParallel(m)
+			go func(m modules.Module) {
+				modules.DownloadAndExtractParallel(m)
 				wg.Done()
 			}(m)
 		}
@@ -348,7 +348,7 @@ func main() {
 
 	if len(modules3rd) > 0 {
 		for _, m := range modules3rd {
-			if err := module3rd.Provide(&m); err != nil {
+			if err := modules.Provide(&m); err != nil {
 				log.Fatal().Msgf("%v", err)
 			}
 		}
@@ -395,7 +395,16 @@ func main() {
 		log.Warn().Msgf("%v", zlibBuilder.WarnMsgWithLibrary())
 	}
 
-	configureScript := configure.Generate(nginxConfigure, modules3rd, dependencies, configureOptions, rootDir, *openResty, *jobs)
+	conf := &configure.Conf{
+		Mods: modules3rd,
+		Deps: dependencies,
+		Opts: configureOptions,
+		Dir:  rootDir,
+
+		OpenRestyEnabled: *openResty,
+	}
+
+	configureScript := conf.Generate(nginxConfigure, *jobs)
 
 	err = os.WriteFile("./nginx-configure", []byte(configureScript), 0655)
 	if err != nil {

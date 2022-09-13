@@ -7,4 +7,5 @@ doc/_build/doctrees/
 *.tar.gz
 .idea/
 test/
-*.json
+build/
+*.swp

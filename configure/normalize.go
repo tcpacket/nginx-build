@@ -21,18 +21,18 @@ func normalizeAddModulePaths(path, rootDir string, dynamic bool) string {
 		return path
 	}
 
-	modulePaths := strings.Split(path, ",")
+	modPaths := strings.Split(path, ",")
 
 	opt := "--add-module"
 	if dynamic {
 		opt = "--add-dynamic-module"
 	}
 
-	for _, module_path := range modulePaths {
-		if strings.HasPrefix(module_path, "/") {
-			result += fmt.Sprintf("%s=%s \\\n", opt, module_path)
+	for _, mod := range modPaths {
+		if strings.HasPrefix(mod, "/") {
+			result += fmt.Sprintf("%s=%s \\\n", opt, mod)
 		} else {
-			result += fmt.Sprintf("%s=%s/%s \\\n", opt, rootDir, module_path)
+			result += fmt.Sprintf("%s=%s/%s \\\n", opt, rootDir, mod)
 		}
 	}
 

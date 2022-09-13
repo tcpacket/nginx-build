@@ -1,4 +1,4 @@
-package module3rd
+package modules
 
 import (
 	"encoding/json"
@@ -6,8 +6,8 @@ import (
 	"os"
 )
 
-func Load(path string) ([]Module3rd, error) {
-	var modules []Module3rd
+func Load(path string) ([]Module, error) {
+	var modules []Module
 	if len(path) > 0 {
 		f, err := os.Open(path)
 		if err != nil {
