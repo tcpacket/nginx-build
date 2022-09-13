@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -36,26 +37,27 @@ func init() {
 // fake flag for --with-xxx=dynamic
 func overrideUnableParseFlags() {
 	for i, arg := range os.Args {
-		if strings.Contains(arg, "with-http_xslt_module=dynamic") {
+		arg = strings.TrimSpace(arg)
+		arg = strings.ToLower(arg)
+		switch {
+		case strings.Contains(arg, "with-http_xslt_module=dynamic"):
 			os.Args[i] = "--with-http_xslt_module_dynamic"
-		}
-		if strings.Contains(arg, "with-http_image_filter_module=dynamic") {
+		case strings.Contains(arg, "with-http_image_filter_module=dynamic"):
 			os.Args[i] = "--with-http_image_filter_module_dynamic"
-		}
-		if strings.Contains(arg, "with-http_geoip_module=dynamic") {
+		case strings.Contains(arg, "with-http_geoip_module=dynamic"):
 			os.Args[i] = "--with-http_geoip_module_dynamic"
-		}
-		if strings.Contains(arg, "with-http_perl_module=dynamic") {
+		case strings.Contains(arg, "with-http_perl_module=dynamic"):
 			os.Args[i] = "--with-http_perl_module_dynamic"
-		}
-		if strings.Contains(arg, "with-mail=dynamic") {
+		case strings.Contains(arg, "with-mail=dynamic"):
 			os.Args[i] = "--with-mail_dynamic"
-		}
-		if strings.Contains(arg, "with-stream=dynamic") {
+		case strings.Contains(arg, "with-stream=dynamic"):
 			os.Args[i] = "--with-stream_dynamic"
-		}
-		if strings.Contains(arg, "with-stream_geoip_module=dynamic") {
+		case strings.Contains(arg, "with-stream_geoip_module=dynamic"):
 			os.Args[i] = "--with-stream_geoip_module_dynamic"
+		case strings.Contains(arg, "with-compat"):
+			os.Args[i] = "--with-compat"
+		default:
+			continue
 		}
 	}
 }
@@ -130,7 +132,6 @@ func main() {
 	configureOnly := nginxBuildOptions.Bools["configureonly"].Enabled
 	idempotent := nginxBuildOptions.Bools["idempotent"].Enabled
 	helpAll := nginxBuildOptions.Bools["help-all"].Enabled
-
 	version := nginxBuildOptions.Values["v"].Value
 	nginxConfigurePath := nginxBuildOptions.Values["c"].Value
 	modulesConfPath := nginxBuildOptions.Values["m"].Value
@@ -142,6 +143,7 @@ func main() {
 	openRestyVersion := nginxBuildOptions.Values["openrestyversion"].Value
 	tengineVersion := nginxBuildOptions.Values["tengineversion"].Value
 	patchOption := nginxBuildOptions.Values["patch-opt"].Value
+	confPath := nginxBuildOptions.Values["conf-path"].Value
 
 	// Allow multiple flags for `--patch`
 	{
@@ -239,6 +241,10 @@ func main() {
 		log.Fatal().Msgf("%v", err)
 	}
 	nginxConfigure = configure.Normalize(nginxConfigure)
+
+	if *confPath != "" {
+		nginxConfigure += fmt.Sprintf(" --conf-path=%s \\\n", *confPath)
+	}
 
 	modules3rd, err := module3rd.Load(*modulesConfPath)
 	if err != nil {

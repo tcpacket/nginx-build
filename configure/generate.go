@@ -32,22 +32,22 @@ func Generate(configure string, modules3rd []module3rd.Module3rd, dependencies [
 		configure += "--with-http_ssl_module \\\n"
 	}
 
-	configure_modules3rd := generateForModule3rd(modules3rd)
-	configure += configure_modules3rd
+	configureModules3rd := generateForModule3rd(modules3rd)
+	configure += configureModules3rd
 
 	for _, option := range options.Values {
-		if *option.Value != "" {
-			if option.Name == "--add-module" {
-				configure += normalizeAddModulePaths(*option.Value, rootDir, false)
-			} else if option.Name == "--add-dynamic-module" {
-				configure += normalizeAddModulePaths(*option.Value, rootDir, true)
-			} else {
-				if strings.Contains(*option.Value, " ") {
-					configure += option.Name + "=" + "'" + *option.Value + "'" + " \\\n"
-				} else {
-					configure += option.Name + "=" + *option.Value + " \\\n"
-				}
-			}
+		if *option.Value == "" {
+			continue
+		}
+		switch {
+		case option.Name == "--add-module":
+			configure += normalizeAddModulePaths(*option.Value, rootDir, false)
+		case option.Name == "--add-dynamic-module":
+			configure += normalizeAddModulePaths(*option.Value, rootDir, true)
+		case strings.Contains(*option.Value, " "):
+			configure += option.Name + "=" + "'" + *option.Value + "'" + " \\\n"
+		default:
+			configure += option.Name + "=" + *option.Value + " \\\n"
 		}
 	}
 

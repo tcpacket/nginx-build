@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/go-git/go-git/v5"
 	"github.com/rs/zerolog/log"
 
 	"github.com/tcpacket/nginx-build/command"
@@ -39,35 +40,39 @@ func download(m Module3rd, logName string) error {
 	form := m.Form
 	url := m.Url
 
+	f, err := os.Create(logName)
+	if err != nil {
+		log.Fatal().Msgf("creating log file %s failed: %s", logName, err.Error())
+	}
+	defer util.Fclose(f)
+
 	switch form {
 	case "git":
-		fallthrough
+		_, err = git.PlainClone(m.Name, false, &git.CloneOptions{
+			URL:               url,
+			SingleBranch:      true,
+			RecurseSubmodules: 10,
+			Progress:          f,
+			InsecureSkipTLS:   false,
+		})
 	case "hg":
 		args := []string{form, "clone", url}
 		if command.VerboseEnabled {
-			return command.Run(args)
+			err = command.Run(args)
+			break
 		}
-
-		f, err := os.Create(logName)
-		if err != nil {
-			return command.Run(args)
-		}
-		defer f.Close()
-
 		cmd, err := command.Make(args)
 		if err != nil {
-			return err
+			break
 		}
-
 		writer := bufio.NewWriter(f)
-		defer writer.Flush()
-
 		cmd.Stderr = writer
-
-		return cmd.Run()
+		err = cmd.Run()
+		util.Flush(writer)
 	case "local": // not implemented yet
 		return nil
+	default:
+		err = fmt.Errorf("form=%s is not supported", form)
 	}
-
-	return fmt.Errorf("form=%s is not supported", form)
+	return err
 }

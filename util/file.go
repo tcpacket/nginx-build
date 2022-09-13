@@ -78,3 +78,14 @@ func Fclose(f io.Closer) {
 		log.Warn().Err(err).Msg("failed to close file")
 	}
 }
+
+type Flusher interface {
+	Flush() error
+}
+
+func Flush(flusher Flusher) {
+	err := flusher.Flush()
+	if err != nil {
+		log.Warn().Err(err).Msg("failed to flush buffer")
+	}
+}
