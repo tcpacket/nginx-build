@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/tcpacket/nginx-build/builder"
-	"github.com/tcpacket/nginx-build/module3rd"
+	"github.com/tcpacket/nginx-build/modules"
 )
 
 func setupBuilders(t *testing.T) []builder.Builder {
@@ -17,9 +17,9 @@ func setupBuilders(t *testing.T) []builder.Builder {
 	return builders
 }
 
-func setupModules3rd(t *testing.T) []module3rd.Module3rd {
+func setupModules3rd(t *testing.T) []modules.Module {
 	modules3rdConf := "../config/modules.json.example"
-	modules3rd, err := module3rd.Load(modules3rdConf)
+	modules3rd, err := modules.Load(modules3rdConf)
 	if err != nil {
 		t.Fatalf("Failed to load %s\n", modules3rdConf)
 	}
@@ -29,7 +29,7 @@ func setupModules3rd(t *testing.T) []module3rd.Module3rd {
 func TestConfiguregenModule3rd(t *testing.T) {
 	modules3rd := setupModules3rd(t)
 
-	configureModules3rd := generateForModule3rd(modules3rd)
+	configureModules3rd := handleModuleFlags(modules3rd)
 
 	wantedOptions := []string{
 		"-add-module=../ngx_http_hello_world",
@@ -51,7 +51,12 @@ func TestConfiguregenWithStaticLibraries(t *testing.T) {
 	dependencies = append(dependencies, builder.MakeStaticLibrary(&builders[builder.ComponentOpenSSL]))
 	dependencies = append(dependencies, builder.MakeStaticLibrary(&builders[builder.ComponentZlib]))
 	var configureOptions Options
-	configureScript := Generate("", []module3rd.Module3rd{}, dependencies, configureOptions, "", false, 1)
+	conf := Conf{
+		Mods: []modules.Module{},
+		Deps: dependencies,
+		Opts: configureOptions,
+	}
+	configureScript := conf.Generate("", 1)
 
 	wantedOptions := []string{
 		"--with-http_ssl_module",

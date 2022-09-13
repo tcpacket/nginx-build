@@ -82,6 +82,9 @@ func makeNginxBuildOptions() Options {
 	argsBool["help-all"] = OptionBool{
 		Desc: "print all flags",
 	}
+	argsBool["with-compat"] = OptionBool{
+		Desc: "enable extra nginx module compatibility",
+	}
 
 	argsString["v"] = OptionValue{
 		Desc:    "nginx version",

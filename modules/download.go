@@ -1,4 +1,4 @@
-package module3rd
+package modules
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 	"github.com/tcpacket/nginx-build/util"
 )
 
-func DownloadAndExtractParallel(m Module3rd) {
+func DownloadAndExtractParallel(m Module) {
 	if util.FileExists(m.Name) {
 		log.Printf("%s already exists.", m.Name)
 		return
@@ -30,14 +30,14 @@ func DownloadAndExtractParallel(m Module3rd) {
 		if err != nil {
 			util.PrintFatalMsg(err, logName)
 		}
-	} else if !util.FileExists(m.Url) {
-		log.Fatal().Msgf("no such directory: %s", m.Url)
+	} else if !util.FileExists(m.URL) {
+		log.Fatal().Msgf("no such directory: %s", m.URL)
 	}
 }
 
-func download(m Module3rd, logName string) error {
+func download(m Module, logName string) error {
 	form := m.Form
-	url := m.Url
+	url := m.URL
 
 	switch form {
 	case "git":

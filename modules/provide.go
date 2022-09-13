@@ -1,4 +1,4 @@
-package module3rd
+package modules
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/tcpacket/nginx-build/util"
 )
 
-func Provide(m *Module3rd) error {
+func Provide(m *Module) error {
 	if len(m.Rev) > 0 {
 		dir := util.SaveCurrentDir()
 		os.Chdir(m.Name)
