@@ -236,7 +236,7 @@ func main() {
 
 	modules3rd, err := modules.Load(*modulesConfPath)
 	if err != nil {
-		log.Fatal().Msgf("%v", err)
+		log.Fatal().Msgf("Failed to load modules: %v", err)
 	}
 
 	if len(*workParentDir) == 0 {
@@ -246,7 +246,7 @@ func main() {
 	if !util.FileExists(*workParentDir) {
 		err := os.Mkdir(*workParentDir, 0755)
 		if err != nil {
-			log.Fatal().Msgf("Failed to create working directory(%s) does not exist.", *workParentDir)
+			log.Fatal().Msgf("Failed to create working directory '%s': %v", *workParentDir, err)
 		}
 	}
 
@@ -371,7 +371,7 @@ func main() {
 		dependencies = append(dependencies, builder.MakeStaticLibrary(&zlibBuilder))
 	}
 
-	log.Printf("Generate configure script for %s.....", nginxBuilder.SourcePath())
+	log.Printf("Generating configure script for %s.....", nginxBuilder.SourcePath())
 
 	if *pcreStatic && pcreBuilder.IsIncludeWithOption(nginxConfigure) {
 		log.Warn().Msgf("%v", pcreBuilder.WarnMsgWithLibrary())

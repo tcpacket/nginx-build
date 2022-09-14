@@ -52,7 +52,7 @@ Compiler: %s %s
 }
 
 func printLastMsg(workDir, srcDir string, openResty, configureOnly bool) {
-	log.Info().Msgf("%v", "Complete building nginx!")
+	log.Info().Msgf("%v", "Finished building :)")
 
 	if !openResty {
 		if !configureOnly {
@@ -63,17 +63,15 @@ func printLastMsg(workDir, srcDir string, openResty, configureOnly bool) {
 			}
 		}
 	}
-	fmt.Println()
-
-	lastMsgFormat := `Enter the following command for install nginx.
+	lastMsgFormat := `Enter the following commands to install your new build:
 
    $ cd %s/%s%s
    $ sudo make install
 `
 	if configureOnly {
-		log.Printf(lastMsgFormat, workDir, srcDir, "\n   $ make")
+		fmt.Printf(lastMsgFormat, workDir, srcDir, "\n   $ make")
 	} else {
-		log.Printf(lastMsgFormat, workDir, srcDir, "")
+		fmt.Printf(lastMsgFormat, workDir, srcDir, "")
 	}
 }
 
