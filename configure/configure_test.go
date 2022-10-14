@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tcpacket/nginx-build/builder"
-	"github.com/tcpacket/nginx-build/modules"
+	"github.com/tcpacket/waf-builder/builder"
+	"github.com/tcpacket/waf-builder/modules"
 )
 
 func setupBuilders(t *testing.T) []builder.Builder {

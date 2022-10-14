@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/waf-builder/command"
 )
 
 func Run() error {

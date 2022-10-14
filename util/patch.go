@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/waf-builder/command"
 )
 
 var (

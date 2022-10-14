@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tcpacket/nginx-build/command"
-	"github.com/tcpacket/nginx-build/logger"
-	"github.com/tcpacket/nginx-build/util"
+	"github.com/tcpacket/waf-builder/command"
+	"github.com/tcpacket/waf-builder/logger"
+	"github.com/tcpacket/waf-builder/util"
 
 	"github.com/go-git/go-git/v5"
 )

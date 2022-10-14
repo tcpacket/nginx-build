@@ -25,7 +25,7 @@ func nginxBuildVersion() string {
 }
 
 func printNginxBuildVersion() {
-	fmt.Printf(`nginx-build %s
+	fmt.Printf(`waf-builder %s
 Compiler: %s %s
 Copyright (C) 2014-2022 Tatsuhiko Kubo <tcpacket@gmail.com>
 `,
@@ -43,7 +43,7 @@ func printConfigureOptions() error {
 }
 
 func printFirstMsg() {
-	fmt.Printf(`nginx-build: %s
+	fmt.Printf(`waf-builder: %s
 Compiler: %s %s
 `,
 		nginxBuildVersion(),

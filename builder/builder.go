@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/tcpacket/nginx-build/command"
-	"github.com/tcpacket/nginx-build/openresty"
+	"github.com/tcpacket/waf-builder/command"
+	"github.com/tcpacket/waf-builder/openresty"
 )
 
 type Builder struct {
@@ -101,7 +101,7 @@ func (builder *Builder) IsIncludeWithOption(nginxConfigure string) bool {
 }
 
 func (builder *Builder) WarnMsgWithLibrary() string {
-	return fmt.Sprintf("[warn]Using '%s' is discouraged. Instead give '-%s' and '-%sversion' to 'nginx-build'",
+	return fmt.Sprintf("[warn]Using '%s' is discouraged. Instead give '-%s' and '-%sversion' to 'waf-builder'",
 		builder.option(), builder.name(), builder.name())
 }
 

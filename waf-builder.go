@@ -9,12 +9,12 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/tcpacket/nginx-build/builder"
-	"github.com/tcpacket/nginx-build/command"
-	"github.com/tcpacket/nginx-build/configure"
-	"github.com/tcpacket/nginx-build/logger"
-	"github.com/tcpacket/nginx-build/modules"
-	"github.com/tcpacket/nginx-build/util"
+	"github.com/tcpacket/waf-builder/builder"
+	"github.com/tcpacket/waf-builder/command"
+	"github.com/tcpacket/waf-builder/configure"
+	"github.com/tcpacket/waf-builder/logger"
+	"github.com/tcpacket/waf-builder/modules"
+	"github.com/tcpacket/waf-builder/util"
 )
 
 var (
@@ -455,7 +455,7 @@ func main() {
 	if err != nil {
 		log.Printf("Failed to build %s\n", nginxBuilder.SourcePath())
 		util.Patch(*patchPath, *patchOption, rootDir, true)
-		util.PrintFatalMsg(err, "nginx-build.log")
+		util.PrintFatalMsg(err, "waf-builder.log")
 	}
 
 	printLastMsg(workDir, nginxBuilder.SourcePath(), *openResty, *configureOnly)

@@ -4,7 +4,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/tcpacket/nginx-build/builder"
+	"github.com/tcpacket/waf-builder/builder"
 )
 
 type Options struct {
@@ -62,7 +62,7 @@ func makeNginxBuildOptions() Options {
 		Desc: "remove entries in working directory",
 	}
 	argsBool["version"] = OptionBool{
-		Desc: "print nginx-build version",
+		Desc: "print waf-builder version",
 	}
 	argsBool["versions"] = OptionBool{
 		Desc: "print nginx versions",

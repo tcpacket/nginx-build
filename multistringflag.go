@@ -6,7 +6,7 @@ import (
 
 // StringFlag implements the methods for flag.Value.
 //
-// nginx-build allows multiple flags in the specified options
+// waf-builder allows multiple flags in the specified options
 // such as `--add-module` and `--add-dynamic-module`.
 type StringFlag []string
 

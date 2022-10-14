@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/tcpacket/nginx-build/command"
+	"github.com/tcpacket/waf-builder/command"
 )
 
 func BuildNginx(jobs int) error {
@@ -14,7 +14,7 @@ func BuildNginx(jobs int) error {
 		return command.Run(args)
 	}
 
-	f, err := os.Create("nginx-build.log")
+	f, err := os.Create("waf-builder.log")
 	if err != nil {
 		return command.Run(args)
 	}

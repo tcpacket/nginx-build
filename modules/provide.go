@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/tcpacket/nginx-build/command"
-	"github.com/tcpacket/nginx-build/util"
+	"github.com/tcpacket/waf-builder/command"
+	"github.com/tcpacket/waf-builder/util"
 )
 
 func Provide(m *Module) error {

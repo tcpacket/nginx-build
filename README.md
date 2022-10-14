@@ -1,154 +1,123 @@
-# nginx-build
+# waf-builder
 
-`nginx-build` - provides a command to build nginx seamlessly.
+waf-builder provides a command to build nginx/openresty along with modsecurity, HTTP/2, and any other desired nginx modules seamlessly.
 
-![gif](https://raw.githubusercontent.com/cubicdaiya/nginx-build/master/images/nginx-build.gif)
+waf-builder is a fork of [nginx-build](https://github.com/cubicdaiya/nginx-build). It adds a few features, including options to easily build http2 and ModSecurity modules into the final product. It also fixes a few issues observed with `nginx-build`, and gets rid of third party system requirements like `git` without sacrificing functionality.
 
-## Requirements
-
- * [git](https://git-scm.com/) and [hg](https://www.mercurial-scm.org/) for downloading 3rd party modules
- * [patch](https://savannah.gnu.org/projects/patch/) for applying patch to nginx
+*Note that this documentation may be incomplete in some areas*
 
 ## Build Support
 
  * [nginx](https://nginx.org/)
  * [OpenResty](https://openresty.org/)
- * [Tengine](https://tengine.taobao.org/)
-
-## Installation
-
-```bash
-go install github.com/cubicdaiya/nginx-build@latest
-```
-
-## Quick Start
-
-```console
-nginx-build -d work
-```
+ * [ModSecurity](https://github.com/SpiderLabs/ModSecurity-nginx)
 
 ## Custom Configuration
 
-`nginx-build` provides a mechanism for customizing configuration for building nginx.
+waf-builder provides a mechanism for customizing configuration for building nginx.
 
 ### Configuration for building nginx
 
-Prepare a configure script like the following.
-
-```bash
-#!/bin/sh
-
-./configure \
---sbin-path=/usr/sbin/nginx \
---conf-path=/etc/nginx/nginx.conf \
-```
-
-Give this file to `nginx-build` with `-c`.
-
-```bash
-$ nginx-build -d work -c configure.example
-```
-
 #### About `--add-module` and `--add-dynamic-module`
 
-`nginx-build` allows to use `--add-module`.
+`waf-builder` allows to use `--add-module`.
 
 ```bash
-$ nginx-build \
+$ waf-builder \
 -d work \
 --add-module=/path/to/ngx_http_hello_world
 ```
 
-Also, `nginx-build` allows to use `--add-dynamic-module`.
+Also, `waf-builder` allows to use `--add-dynamic-module`.
 
 ```bash
-$ nginx-build \
+$ waf-builder \
 -d work \
 --add-dynamic-module=/path/to/ngx_http_hello_world
 ```
 
+<details>
+<summary>Embedding static libraries</summary>
+
 ### Embedding zlib statically
 
-Give `-zlib` to `nginx-build`.
+Give `-zlib` to `waf-builder`.
 
 ```bash
-$ nginx-build -d work -zlib
+$ waf-builder -d work -zlib
 ```
 
 `-zlibversion` is an option to set a version of zlib.
 
 ### Embedding PCRE statically
 
-Give `-pcre` to `nginx-build`.
+Give `-pcre` to `waf-builder`.
 
 ```bash
-$ nginx-build -d work -pcre
+$ waf-builder -d work -pcre
 ```
 
 `-pcreversion` is an option to set a version of PCRE.
 
 ### Embedding OpenSSL statically
 
-Give `-openssl` to `nginx-build`.
+Give `-openssl` to `waf-builder`.
 
 ```bash
-$ nginx-build -d work -openssl
+$ waf-builder -d work -openssl
 ```
 
 `-opensslversion` is an option to set a version of OpenSSL.
 
+*Note: this likely shouldn't be done if the target deployment is using OpenSSL in FIPS mode, nginx should rely on the shared library in that scenario.*
+
 ### Embedding LibreSSL statically
 
-Give `-libressl` to `nginx-build`.
+Give `-libressl` to `waf-builder`.
 
 ```bash
-$ nginx-build -d work -libressl
+$ waf-builder -d work -libressl
 ```
 
 `-libresslversion` is an option to set a version of LibreSSL.
 
+</details>
+
+<details>Embedding nginx modules</details>
+<summary>
+
 ### Embedding 3rd-party modules
 
-`nginx-build` provides a mechanism for embedding 3rd-party modules.
+`waf-builder` provides a mechanism for embedding 3rd-party modules.
 Prepare a json file below.
 
-```ini
-[
-  {
-    "name": "ngx_http_hello_world",
-    "form": "git",
-    "url": "https://github.com/cubicdaiya/ngx_http_hello_world"
-  }
-]
-```
-
-Give this file to `nginx-build` with `-m`.
-
-```bash
-$ nginx-build -d work -m modules.json.example
-```
-
-#### Embedding 3rd-party module dynamically
-
-Give `true` to `dynamic`.
-
-```ini
+```json
 [
   {
     "name": "ngx_http_hello_world",
     "form": "git",
     "url": "https://github.com/cubicdaiya/ngx_http_hello_world",
-    "dynamic": true
+    "dynamic": false
   }
 ]
 ```
 
+(Change dynamic accordingly)
+
+Give this file to `waf-builder` with `-m`.
+
+```bash
+$ waf-builder -d work -m modules.json.example
+```
+
+waf-builder will use a built-in git client (a new feature of this fork in contrast to `nginx-build`) to fetch the module. if it is a valid nginx module, it will build nginx/openresty with it included.
+
 #### Provision for 3rd-party module
 
-There are some 3rd-party modules expected provision. `nginx-build` provides the options such as `shprov` and `shprovdir` for this problem.
+There are some 3rd-party modules expected provision. `waf-builder` provides the options such as `shprov` and `shprovdir` for this problem.
 There is the example configuration below.
 
-```ini
+```json
 [
   {
     "name": "njs/nginx",
@@ -160,12 +129,17 @@ There is the example configuration below.
 ]
 ```
 
+</details>
+
+<details>
+<summary>Patches and Idempotent builds</summary>
+
 ## Applying patch before building nginx
 
-`nginx-build` provides the options such as `-patch` and `-patch-opt` for applying patch to nginx.
+`waf-builder` provides the options such as `-patch` and `-patch-opt` for applying patch to nginx.
 
 ```console
-nginx-build \
+waf-builder \
  -d work \
  -patch something.patch \
  -patch-opt "-p1"
@@ -173,12 +147,12 @@ nginx-build \
 
 ## Idempotent build
 
-`nginx-build` supports a certain level of idempotent build of nginx.
+`waf-builder` supports a certain level of idempotent build of nginx.
 If you want to ensure a build of nginx idempotent and do not want to build nginx as same as already installed nginx,
-give `-idempotent` to `nginx-build`.
+give `-idempotent` to `waf-builder`.
 
 ```bash
-$ nginx-build -d work -idempotent
+$ waf-builder -d work -idempotent
 ```
 
 `-idempotent` ensures an idempotent by checking the software versions below.
@@ -190,31 +164,19 @@ $ nginx-build -d work -idempotent
 
 On the other hand, `-idempotent` does not cover versions of 3rd party modules and dynamic linked libraries.
 
+</details>
+
 ## Build OpenResty
 
-`nginx-build` supports to build [OpenResty](https://openresty.org/).
+`waf-builder` supports to build [OpenResty](https://openresty.org/).
 
 ```bash
-$ nginx-build -d work -openresty -pcre -openssl
+$ waf-builder -d work -openresty -pcre -openssl
 ```
 
 If you don't install PCRE and OpenSSL on your system, it is required to add the option `-pcre` and `-openssl`.
 
 
 And there is the limitation for the support of OpenResty.
-`nginx-build` does not allow to use OpenResty's unique configure options directly.
+`waf-builder` does not allow to use OpenResty's unique configure options directly.
 If you want to use OpenResty's unique configure option, [Configuration for building nginx](#configuration-for-building-nginx) is helpful.
-
-## Build Tengine
-
-`nginx-build` supports to build [Tengine](https://tengine.taobao.org/).
-
-```bash
-$ nginx-build -d work -tengine -openssl
-```
-
-If you don't install OpenSSL on your system, it is required to add the option `-openssl`.
-
-There is the limitation for the support of [Tengine](https://tengine.taobao.org/).
-`nginx-build` does not allow to use Tengine's unique configure options directly.
-If you want to use Tengine's unique configure option, [Configuration for building nginx](#configuration-for-building-nginx) is helpful.

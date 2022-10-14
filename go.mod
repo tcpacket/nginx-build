@@ -1,10 +1,11 @@
-module github.com/tcpacket/nginx-build
+module github.com/tcpacket/waf-builder
 
 go 1.19
 
 require (
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/kortschak/utter v1.5.0
+	github.com/pelletier/go-toml v1.9.5
 	github.com/rs/zerolog v1.28.0
 )
 

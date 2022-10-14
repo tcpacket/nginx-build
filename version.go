@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/tcpacket/nginx-build/builder"
+	"github.com/tcpacket/waf-builder/builder"
 )
 
 func versionsGenNginx() []string {
@@ -37,6 +37,6 @@ func printNginxVersions() {
 func versionCheck(version string) {
 	if len(version) == 0 {
 		log.Warn().Msgf("%v", "nginx version is not set.")
-		log.Warn().Msgf("nginx-build use %s.", builder.NginxVersion)
+		log.Warn().Msgf("waf-builder use %s.", builder.NginxVersion)
 	}
 }
